@@ -300,8 +300,3 @@ Cross Examination:
 
     st.divider()
 
-    with st.expander("Why this counts as a multi-agent app"):
-        st.write(
-            "This app uses separate LLM roles: Pro Advocate, Con Advocate, Cross Examiner, and Judge. "
-            "Each agent receives a different system prompt and performs a different step in the decision process."
-        )
