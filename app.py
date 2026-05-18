@@ -292,11 +292,73 @@ Cross Examination:
         st.subheader("Con Advocate")
         st.markdown(con_case)
 
-    st.subheader("Cross-Examination")
+    st.subheader("Cross Examination")
     st.markdown(cross_exam)
 
     st.subheader("Judge's Verdict")
     st.markdown(verdict)
+
+    st.subheader("Follow Up Questions")
+
+    if "case_summary" not in st.session_state:
+        st.session_state.case_summary = ""
+
+    st.session_state.case_summary = f"""
+User context:
+{user_context}
+
+Pro Advocate argument:
+{pro_case}
+
+Con Advocate argument:
+{con_case}
+
+Cross Examination:
+{cross_exam}
+
+Judge Verdict:
+{verdict}
+"""
+
+    followup_question = st.text_input(
+        "Ask a quick follow-up question about the verdict:",
+        placeholder="Example: What should I do if my parents disagree?"
+    )
+
+    if st.button("Ask Follow-Up"):
+        if not followup_question.strip():
+            st.warning("Type a follow-up question first.")
+        else:
+            followup_prompt = """
+You are the Quick Follow-Up Advisor in Decision Court.
+
+You answer the user's follow-up question using the original case context and judge verdict.
+
+Rules:
+- Keep the answer short.
+- Be practical.
+- Do not restart the whole debate.
+- Do not repeat the full verdict.
+- Give direct advice in 1 to 2 short paragraphs.
+"""
+
+            followup_context = f"""
+Original case:
+{st.session_state.case_summary}
+
+User's follow-up question:
+{followup_question}
+"""
+
+            with st.spinner("Answering follow-up..."):
+                followup_answer = ask_agent(
+                    followup_prompt,
+                    followup_context,
+                    temperature=0.3
+                )
+
+            st.markdown("### Follow-Up Answer")
+            st.markdown(followup_answer)
 
     st.divider()
 
